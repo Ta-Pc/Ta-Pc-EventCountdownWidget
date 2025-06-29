@@ -14,12 +14,12 @@ A sleek, modern, and highly customizable home screen widget for Android that pro
 <p align="center">
   <img src="https://github.com/user-attachments/assets/a2177c3f-a460-4d56-aa38-970db104705a" alt="Homescreen w/ widgets" width="30%"/>
   <img src="https://github.com/user-attachments/assets/b6216560-a1db-4242-8fdf-ed6608b56086" alt="Homescreen w/ widgets" width="30%"/>
-  <img src="https://github.com/user-attachments/assets/d0aa9bc8-d761-400f-9c06-1eeed82f0fee" alt="Single Event Widget" width="30%"/>
+  <img src="https://github.com/user-attachments/assets/d0aa9bc8-d761-400f-9c06-1eeed82f0fee" alt="Launcher" width="30%"/>
   <img src="https://github.com/user-attachments/assets/731ad3be-ca20-4894-8df4-f241ba7f1931" alt="Event List Widget" width="30%"/>
   <img src="https://github.com/user-attachments/assets/f7362982-e404-4d4a-a6e2-0df319807a83" alt="Event List Widget" width="30%"/>
   <img src="https://github.com/user-attachments/assets/affbdbe2-070a-4ad6-91a6-91b35024dda5" alt="Configuration Screen" width="30%"/>
 </p>
-![image](https://github.com/user-attachments/assets/f7efc6ee-adb1-434c-a141-33068a3308ed)
+
 ---
 
 ### 🚀 Key Features
