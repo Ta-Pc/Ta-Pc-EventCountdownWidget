@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget configuration dimensions -->
+    <dimen name="color_option_size">40dp</dimen>
+    <dimen name="color_option_margin">4dp</dimen>
+    <dimen name="color_option_radius">20dp</dimen>
+
+    <!-- Widget Text Sizes (Swiss Style Hierarchy) -->
+    <dimen name="widget_title_text_size">16sp</dimen> <!-- Larger, Bold -->
+    <dimen name="widget_subtitle_text_size">14sp</dimen> <!-- Smaller, Regular/Light -->
+
+    <!-- Widget font sizes (DEPRECATED - Replaced by title/subtitle sizes above) -->
+    <!-- <dimen name="widget_font_small">6sp</dimen> -->
+    <!-- <dimen name="widget_font_medium">8sp</dimen> -->
+    <!-- <dimen name="widget_font_large">12sp</dimen> -->
+
+    <!-- Layout margins and padding -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="widget_margin">8dp</dimen> <!-- Outer margin for provider -->
+    <dimen name="widget_internal_padding">12dp</dimen> <!-- Internal padding for content -->
+    <dimen name="card_margin">8dp</dimen>
+    <dimen name="content_padding">16dp</dimen>
+
+    <!-- Widget corner radius -->
+    <dimen name="widget_corner_radius">20dp</dimen> <!-- Increased for softer look -->
+
+    <!-- List item dimensions -->
+    <dimen name="list_item_height">72dp</dimen>
+    <dimen name="list_item_padding">16dp</dimen>
+
+    <!-- Color preview dimensions -->
+    <dimen name="color_preview_height">48dp</dimen>
+    <dimen name="color_preview_margin">8dp</dimen>
+
+    <!-- Button dimensions -->
+    <dimen name="button_height">48dp</dimen>
+    <dimen name="button_margin">8dp</dimen>
+
+    <!-- Text sizes (General App - Can be reviewed if needed) -->
+    <dimen name="text_size_title">20sp</dimen>
+    <dimen name="text_size_subtitle">16sp</dimen>
+    <dimen name="text_size_body">14sp</dimen>
+    <dimen name="text_size_caption">12sp</dimen>
+
+    <!-- Event selection text sizes - Keep as is or adjust if needed -->
+    <dimen name="event_title_text_size">20sp</dimen>
+    <dimen name="event_description_text_size">16sp</dimen>
+    <dimen name="event_date_text_size">18sp</dimen>
+</resources>

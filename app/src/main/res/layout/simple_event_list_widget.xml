@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/widget_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="10dp"
+    android:background="@drawable/widget_background">
+
+    <!-- Header (Keep as is) -->
+    <LinearLayout
+        android:id="@+id/widget_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="8dp"
+    android:gravity="center_vertical">
+    <ImageView
+        android:id="@+id/widget_header_icon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:src="@drawable/ic_calendar"
+        android:layout_marginEnd="8dp"
+        app:tint="?android:attr/textColorPrimary"
+        android:contentDescription="Calendar" />
+    <TextView
+        android:id="@+id/widget_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="@string/upcoming_events"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_gravity="center_vertical" />
+    <FrameLayout
+        android:id="@+id/widget_refresh_container"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="?android:attr/selectableItemBackgroundBorderless">
+        <ImageView
+            android:id="@+id/widget_refresh"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_refresh"
+            app:tint="?android:attr/textColorPrimary"
+            android:contentDescription="Refresh" />
+    </FrameLayout>
+</LinearLayout>
+
+    <!-- ListView for events -->
+<ListView
+android:id="@+id/event_list_view"
+android:layout_width="match_parent"
+android:layout_height="0dp"
+android:layout_weight="1"
+android:divider="@null"
+    android:dividerHeight="0dp"
+    tools:listitem="@layout/event_list_widget_item" />
+
+    <!-- Empty view (Linked to ListView) -->
+<LinearLayout
+android:id="@+id/empty_view_container"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+<ImageView
+android:id="@+id/empty_view_icon"
+android:layout_width="48dp"
+android:layout_height="48dp"
+android:src="@drawable/ic_empty_calendar"
+android:alpha="0.7"
+app:tint="?android:attr/textColorSecondary"
+android:layout_marginBottom="12dp" />
+<TextView
+android:id="@+id/empty_view"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:gravity="center"
+android:text="@string/no_upcoming_events"
+android:textAppearance="?android:attr/textAppearanceSmall"
+android:textSize="15sp"
+android:alpha="0.8" />
+    </LinearLayout>
+
+    </LinearLayout>

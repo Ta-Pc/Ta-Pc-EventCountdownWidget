@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application theme -->
+    <style name="BaseAppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryColorDark</item>
+        <item name="colorOnPrimary">@color/white</item>
+
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryColorDark</item>
+        <item name="colorOnSecondary">@color/black</item>
+
+        <!-- Surface colors for cards -->
+        <item name="colorSurface">?android:attr/colorBackground</item>
+        <item name="colorOnSurface">?android:attr/textColorPrimary</item>
+        <item name="colorOnSurfaceVariant">?android:attr/textColorSecondary</item>
+
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    </style>
+
+    <!-- The actual theme applied in the manifest -->
+    <style name="AppTheme" parent="BaseAppTheme" />
+
+    <!-- Widget theme for dynamic theming (Material You) -->
+    <style name="AppTheme.Widget" parent="AppTheme">
+        <item name="android:textColor">?attr/colorOnPrimary</item>
+        <item name="android:background">?attr/colorPrimary</item>
+    </style>
+
+    <!-- Light theme variant -->
+    <style name="AppTheme.Light" parent="BaseAppTheme">
+        <item name="colorPrimary">@color/lightPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/lightPrimaryColorDark</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="colorSurface">@color/surfaceColorLight</item>
+        <item name="colorOnSurface">@color/textColorPrimaryLight</item>
+        <item name="colorOnSurfaceVariant">@color/textColorSecondaryLight</item>
+    </style>
+
+    <!-- Dark theme variant -->
+    <style name="AppTheme.Dark" parent="BaseAppTheme">
+        <item name="colorPrimary">@color/darkPrimaryColor</item>
+        <item name="colorPrimaryVariant">@color/darkPrimaryColorDark</item>
+        <item name="android:windowBackground">@color/darkBackground</item>
+        <item name="colorSurface">@color/surfaceColor</item>
+        <item name="colorOnSurface">@color/textColorPrimary</item>
+        <item name="colorOnSurfaceVariant">@color/textColorSecondary</item>
+    </style>
+</resources>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Event Countdown Widget</string>
+
+    <!-- Widget configuration -->
+    <string name="configure_widget">Configure Widget</string>
+    <string name="widget_color">Widget Color</string>
+    <string name="randomize_color">Randomize Color</string>
+    <string name="color_randomized">Color randomized</string>
+    <!-- <string name="font_size">Font Size</string> REMOVED -->
+    <string name="theme_style">Theme Style</string>
+    <string name="dynamic">Dynamic</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <!-- <string name="small">Small</string> REMOVED -->
+    <!-- <string name="medium">Medium</string> REMOVED -->
+    <!-- <string name="large">Large</string> REMOVED -->
+    <string name="select_event">Select Event</string>
+    <string name="save">Save</string>
+    <string name="config_saved">Configuration saved</string>
+
+    <!-- Event selection -->
+    <string name="select_event_title">Select Event</string>
+    <string name="no_events_found">No events found</string>
+
+    <!-- Calendar settings -->
+    <string name="calendar_settings_title">Calendar Settings</string>
+    <string name="select_calendars">Select Calendars</string>
+    <string name="no_calendars_selected">No calendars are currently selected.\nSelect calendars to see events.</string>
+    <string name="calendars_saved">Calendars Saved</string>
+    <string name="check_calendar_settings">Check Calendar Settings</string>
+
+
+    <!-- Widget display -->
+    <string name="countdown_today">Today!</string>
+    <string name="countdown_one_day">Tomorrow!</string>
+    <string name="countdown_passed">Event passed</string> <!-- Changed slightly -->
+    <string name="widget_default_title">Event Countdown</string>
+    <string name="widget_setup_prompt">Tap to select an event</string>
+    <string name="calendar_selection_instructions">Select which calendars to show events from:</string>
+    <string name="calendar_settings">Calendar Settings</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="no_upcoming_events">No upcoming events</string>
+    <string name="configure_list_widget">Configure Event List Widget</string>
+    <string name="max_events_to_show">Maximum Events to Show</string>
+    <string name="settings">Settings</string>
+    <string name="countdown_starts_soon">Starts soon</string>
+    <string name="countdown_now">Happening now!</string> <!-- Added for clarity -->
+    <string name="label_ago">ago</string>
+    <string name="label_in">In</string>
+    <string name="label_left">left</string>
+
+
+    <!-- Arrays for font size options -->
+    <!-- REMOVED
+    <string-array name="font_size_labels">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+    </string-array>
+     -->
+
+    <!-- Plurals for time units -->
+    <plurals name="years">
+        <item quantity="one">%d yr</item>
+        <item quantity="other">%d yrs</item>
+    </plurals>
+    <plurals name="months">
+        <item quantity="one">%d mo</item>
+        <item quantity="other">%d mos</item>
+    </plurals>
+    <plurals name="days">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="hours">
+        <item quantity="one">%d hr</item>
+        <item quantity="other">%d hrs</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d min</item>
+        <item quantity="other">%d mins</item>
+    </plurals>
+
+    <string name="label_ended">Ended</string>
+    <string name="label_today_at">Today at %s</string> <!-- %s is for time HH:mm -->
+    <string name="label_tomorrow_at">Tomorrow at %s</string> <!-- %s is for time HH:mm -->
+    <string name="label_on_date_at">On %1$s at %2$s</string> <!-- %1$s=Date (e.g., Apr 10), %2$s=Time (HH:mm) -->
+    <string name="label_all_day">All day</string>
+    <string name="label_ended_yesterday">Ended yesterday</string>
+    <string name="label_ended_on">Ended %s</string> <!-- %s is for Date (e.g., Apr 9) -->
+    <string name="label_until">until %s</string> <!-- %s is for time HH:mm -->
+    <string name="label_until_date">until %s</string> <!-- %s is for Date (e.g., Apr 10) -->
+
+    <!-- NEW: Plurals for detailed remaining/ago formats -->
+    <plurals name="days_left">
+        <item quantity="one">%d day left</item>
+        <item quantity="other">%d days left</item>
+    </plurals>
+    <plurals name="days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+    <plurals name="hours_left">
+        <item quantity="one">%d hr left</item>
+        <item quantity="other">%d hrs left</item>
+    </plurals>
+    <plurals name="minutes_left">
+        <item quantity="one">%d min left</item>
+        <item quantity="other">%d mins left</item>
+    </plurals>
+
+
+</resources>

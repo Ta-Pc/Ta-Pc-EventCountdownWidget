@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Base application colors -->
+    <color name="primaryColor">#03A9F4</color>
+    <color name="primaryColorDark">#0288D1</color>
+    <color name="secondaryColor">#FFC107</color>
+    <color name="secondaryColorDark">#FFA000</color>
+
+    <!-- Basic colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+
+    <!-- Dark theme colors -->
+    <color name="darkPrimaryColor">#1565C0</color>
+    <color name="darkPrimaryColorDark">#0D47A1</color>
+    <color name="darkBackground">#121212</color>
+    <color name="darkSurface">#1E1E1E</color>
+    <color name="darkTextPrimary">#FFFFFF</color>
+    <color name="darkTextSecondary">#B3FFFFFF</color>
+
+    <!-- Light theme colors -->
+    <color name="lightPrimaryColor">#29B6F6</color>
+    <color name="lightPrimaryColorDark">#0288D1</color>
+    <color name="lightBackground">#F5F5F5</color>
+    <color name="lightSurface">#FFFFFF</color>
+    <color name="lightTextPrimary">#212121</color>
+    <color name="lightTextSecondary">#757575</color>
+
+    <!-- Widget specific colors -->
+    <color name="widget_background_light">#F5F5F5</color>
+    <color name="widget_background_dark">#303030</color>
+    <color name="widget_divider_light">#1F000000</color>
+    <color name="widget_divider_dark">#1FFFFFFF</color>
+    <color name="widget_text_on_light">#212121</color>
+    <color name="widget_text_on_dark">#FFFFFF</color>
+
+    <!-- Status colors -->
+    <color name="success">#4CAF50</color>
+    <color name="warning">#FF9800</color>
+    <color name="error">#F44336</color>
+    <color name="info">#2196F3</color>
+
+    <!-- Night mode specific text colors -->
+    <color name="textColorPrimary">@color/darkTextPrimary</color>
+    <color name="textColorSecondary">@color/darkTextSecondary</color>
+    <color name="surfaceColor">@color/darkSurface</color>
+
+    <!-- Day mode text colors -->
+    <color name="textColorPrimaryLight">@color/lightTextPrimary</color>
+    <color name="textColorSecondaryLight">@color/lightTextSecondary</color>
+    <color name="surfaceColorLight">@color/lightSurface</color>
+</resources>
