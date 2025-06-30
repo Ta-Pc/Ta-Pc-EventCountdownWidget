@@ -1,4 +1,4 @@
-# Event Countdown Widget for Android
+# Calender Event Countdown Widget
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Language](https://img.shields.io/badge/language-Java-purple.svg)
