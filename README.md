@@ -70,7 +70,14 @@ This application is a practical demonstration of modern Android widget developme
 
 ---
 
-### ⚙️ Getting Started
+## How to Install
+1. Go to the [Releases page](https://github.com/Ta-Pc/Ta-Pc-EventCountdownWidget/releases).
+2. Download the latest `.apk` file.
+3. Open the downloaded file on your Android device to install it.
+
+> **Note:** You may need to enable "Install from unknown sources" in your phone's security settings to install the app.
+
+### ⚙️ Clone Reprository
 
 To build and run this project, you will need the latest stable version of Android Studio.
 
