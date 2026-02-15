@@ -56,6 +56,11 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         return events.size();
     }
 
+    public void updateList(List<EventSelectionActivity.CalendarEvent> newList) {
+        this.events = newList;
+        notifyDataSetChanged();
+    }
+
     static class EventViewHolder extends RecyclerView.ViewHolder {
         MaterialCardView cardView;
         TextView eventTitle;

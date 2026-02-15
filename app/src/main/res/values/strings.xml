@@ -111,4 +111,14 @@
     </plurals>
 
 
+    <string name="permission_required">Calendar permission is required to select events.</string>
+
+    <!-- MainActivity Hub -->
+    <string name="active_widgets_title">Active Widgets</string>
+    <string name="countdown_widgets">Countdown Widgets: %d</string>
+    <string name="list_widgets">List Widgets: %d</string>
+    <string name="manage_calendars">Manage Calendars</string>
+    <string name="grant_permission">Grant Calendar Permission</string>
+    <string name="permission_granted_status">Calendar permission granted</string>
+    <string name="permission_denied_status">Calendar permission needed</string>
 </resources>

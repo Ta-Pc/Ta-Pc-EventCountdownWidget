@@ -12,6 +12,7 @@ import android.os.Build;
 import android.text.TextUtils; // Import TextUtils
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import androidx.annotation.AttrRes;
@@ -20,9 +21,10 @@ import androidx.core.content.ContextCompat;
 
 import com.example.eventcountdownwidget.utils.ColorUtil;
 
-import java.util.ArrayList; // Import ArrayList
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List; // Import List
+import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -139,6 +141,8 @@ public class EventCountdownWidget extends AppWidgetProvider {
         float subtitleSizeSp = context.getResources().getDimension(R.dimen.widget_subtitle_text_size) / context.getResources().getDisplayMetrics().scaledDensity;
         views.setTextViewTextSize(R.id.appwidget_event_title, TypedValue.COMPLEX_UNIT_SP, titleSizeSp);
         views.setTextViewTextSize(R.id.appwidget_subtitle_data, TypedValue.COMPLEX_UNIT_SP, subtitleSizeSp);
+        // Apply color to Date text as well
+        views.setTextColor(R.id.appwidget_event_date, subtitleTextColor);
 
 
         // --- Event Countdown Logic (Refactored) ---
@@ -164,8 +168,19 @@ public class EventCountdownWidget extends AppWidgetProvider {
             // Display placeholder text
             views.setTextViewText(R.id.appwidget_event_title, context.getString(R.string.widget_default_title));
             subtitleText = context.getString(R.string.widget_setup_prompt);
+            views.setViewVisibility(R.id.appwidget_event_date, View.GONE);
         }
         views.setTextViewText(R.id.appwidget_subtitle_data, subtitleText);
+
+        // --- Event Date Validation & Display ---
+        if (eventStartTime != -1 && eventTitle != null && !eventTitle.isEmpty()) {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d 'at' HH:mm", Locale.getDefault());
+            String dateText = dateFormat.format(new Date(eventStartTime));
+            views.setTextViewText(R.id.appwidget_event_date, dateText);
+            views.setViewVisibility(R.id.appwidget_event_date, View.VISIBLE);
+        } else {
+             views.setViewVisibility(R.id.appwidget_event_date, View.GONE);
+        }
 
 
         // --- Click Intent for Configuration ---
@@ -205,41 +220,7 @@ public class EventCountdownWidget extends AppWidgetProvider {
         long hours = (diffMillis % DAY_MILLIS) / HOUR_MILLIS;
         long minutes = (diffMillis % HOUR_MILLIS) / MINUTE_MILLIS;
 
-        List<String> parts = new ArrayList<>();
         Resources res = context.getResources();
-
-        if (years > 0) {
-            parts.add(res.getQuantityString(R.plurals.years, (int) years, (int) years));
-        }
-        if (months > 0) {
-            parts.add(res.getQuantityString(R.plurals.months, (int) months, (int) months));
-        }
-        if (days > 0 && years == 0) { // Show days only if no years shown
-            parts.add(res.getQuantityString(R.plurals.days, (int) days, (int) days));
-        }
-        if (hours > 0 && years == 0 && months == 0) { // Show hours only if no years/months shown
-            parts.add(res.getQuantityString(R.plurals.hours, (int) hours, (int) hours));
-        }
-        if (minutes > 0 && years == 0 && months == 0 && days == 0) { // Show minutes only if smallest unit
-            parts.add(res.getQuantityString(R.plurals.minutes, (int) minutes, (int) minutes));
-        }
-
-        // Build the final string (e.g., "In 5 days 6 hrs") - Show max 2 largest units
-        String timeString;
-        if (parts.size() >= 2) {
-            timeString = parts.get(0) + " " + parts.get(1);
-        } else if (parts.size() == 1) {
-            timeString = parts.get(0);
-        } else {
-            // Should have been caught by "starts soon", but as fallback:
-            timeString = res.getQuantityString(R.plurals.minutes, 1, 1); // "1 min"
-        }
-
-        // Decide prefix: "In" vs "X left". Let's use "In" for simplicity.
-        // Or use "left" if less than a day?
-        String prefix = (diffMillis < DAY_MILLIS && years==0 && months==0 && days==0) ? "" : context.getString(R.string.label_in) + " ";
-        String suffix = (diffMillis < DAY_MILLIS && years==0 && months==0 && days==0) ? " " + context.getString(R.string.label_left) : "";
-
 
         // Special case for Today: Use hour/minute format directly if less than 24 hours
         if (diffMillis < DAY_MILLIS && years == 0 && months == 0 && days == 0) {
@@ -250,10 +231,40 @@ public class EventCountdownWidget extends AppWidgetProvider {
             } else { // Only minutes left
                 return context.getString(R.string.label_in) + " " + res.getQuantityString(R.plurals.minutes, (int) minutes, (int) minutes);
             }
-        } else { // More than a day away
-            return context.getString(R.string.label_in) + " " + timeString;
         }
-        // return prefix + timeString + suffix; // Alternative prefix/suffix logic
+
+        // More than a day away — collect the two largest units without allocating a List
+        String part1 = null;
+        String part2 = null;
+
+        if (years > 0) {
+            part1 = res.getQuantityString(R.plurals.years, (int) years, (int) years);
+        }
+        if (months > 0) {
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.months, (int) months, (int) months); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.months, (int) months, (int) months); }
+        }
+        if (days > 0 && years == 0) { // Show days only if no years shown
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.days, (int) days, (int) days); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.days, (int) days, (int) days); }
+        }
+        if (hours > 0 && years == 0 && months == 0) { // Show hours only if no years/months shown
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.hours, (int) hours, (int) hours); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.hours, (int) hours, (int) hours); }
+        }
+
+        // Build the final string (Show max 2 largest units)
+        String timeString;
+        if (part1 != null && part2 != null) {
+            timeString = part1 + " " + part2;
+        } else if (part1 != null) {
+            timeString = part1;
+        } else {
+            // Should have been caught by "starts soon", but as fallback:
+            timeString = res.getQuantityString(R.plurals.minutes, 1, 1); // "1 min"
+        }
+
+        return context.getString(R.string.label_in) + " " + timeString;
     }
 
 
@@ -277,35 +288,41 @@ public class EventCountdownWidget extends AppWidgetProvider {
         long hours = (diffMillis % DAY_MILLIS) / HOUR_MILLIS;
         long minutes = (diffMillis % HOUR_MILLIS) / MINUTE_MILLIS;
 
-        List<String> parts = new ArrayList<>();
         Resources res = context.getResources();
 
+        // Collect the two largest units without allocating a List
+        String part1 = null;
+        String part2 = null;
+
         if (years > 0) {
-            parts.add(res.getQuantityString(R.plurals.years, (int) years, (int) years));
+            part1 = res.getQuantityString(R.plurals.years, (int) years, (int) years);
         }
         if (months > 0) {
-            parts.add(res.getQuantityString(R.plurals.months, (int) months, (int) months));
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.months, (int) months, (int) months); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.months, (int) months, (int) months); }
         }
         if (days > 0 && years == 0) { // Show days only if no years shown
-            parts.add(res.getQuantityString(R.plurals.days, (int) days, (int) days));
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.days, (int) days, (int) days); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.days, (int) days, (int) days); }
         }
         if (hours > 0 && years == 0 && months == 0) { // Show hours only if no years/months shown
-            parts.add(res.getQuantityString(R.plurals.hours, (int) hours, (int) hours));
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.hours, (int) hours, (int) hours); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.hours, (int) hours, (int) hours); }
         }
         if (minutes > 0 && years == 0 && months == 0 && days == 0) { // Show minutes only if smallest unit
-            parts.add(res.getQuantityString(R.plurals.minutes, (int) minutes, (int) minutes));
+            if (part1 == null) { part1 = res.getQuantityString(R.plurals.minutes, (int) minutes, (int) minutes); }
+            else if (part2 == null) { part2 = res.getQuantityString(R.plurals.minutes, (int) minutes, (int) minutes); }
         }
 
         // Build the final string (Show max 2 largest units)
         String timeString;
-        if (parts.size() >= 2) {
-            timeString = parts.get(0) + " " + parts.get(1);
-        } else if (parts.size() == 1) {
-            timeString = parts.get(0);
+        if (part1 != null && part2 != null) {
+            timeString = part1 + " " + part2;
+        } else if (part1 != null) {
+            timeString = part1;
         } else {
             // Fallback if calculation is weird (shouldn't happen if diffMillis >= MINUTE_MILLIS)
-            timeString = context.getString(R.string.countdown_passed);
-            return timeString; // Return early without "ago"
+            return context.getString(R.string.countdown_passed); // Return early without "ago"
         }
 
         return timeString + " " + context.getString(R.string.label_ago);

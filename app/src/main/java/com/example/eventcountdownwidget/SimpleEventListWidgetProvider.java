@@ -328,11 +328,23 @@ public class SimpleEventListWidgetProvider extends AppWidgetProvider {
      */
     static class CountdownFormatter {
         private static final String TAG = "CountdownFormatter";
-        // Reusable DateFormat instances (ensure thread safety via synchronized blocks or use thread-local instances)
+        // Reusable DateFormat instances (ensure thread safety via synchronized blocks)
         private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("HH:mm", Locale.getDefault());
         private static final SimpleDateFormat DATE_FORMAT_SHORT = new SimpleDateFormat("MMM d", Locale.getDefault());
         private static final SimpleDateFormat DATE_TIME_FORMAT_SHORT = new SimpleDateFormat("MMM d, HH:mm", Locale.getDefault());
         private static final SimpleDateFormat DAY_TIME_FORMAT_SHORT = new SimpleDateFormat("EEE HH:mm", Locale.getDefault());
+
+        // Reusable Calendar instances via ThreadLocal — avoids expensive Calendar.getInstance() per item
+        private static final ThreadLocal<Calendar> TL_CAL_A = new ThreadLocal<Calendar>() {
+            @Override protected Calendar initialValue() { return Calendar.getInstance(SAST_TIMEZONE); }
+        };
+        private static final ThreadLocal<Calendar> TL_CAL_B = new ThreadLocal<Calendar>() {
+            @Override protected Calendar initialValue() { return Calendar.getInstance(SAST_TIMEZONE); }
+        };
+        // Reusable Date for formatting — avoids per-call allocation
+        private static final ThreadLocal<Date> TL_DATE = new ThreadLocal<Date>() {
+            @Override protected Date initialValue() { return new Date(); }
+        };
 
         static { // Apply TimeZone once
             TIME_FORMAT.setTimeZone(SAST_TIMEZONE);
@@ -342,52 +354,52 @@ public class SimpleEventListWidgetProvider extends AppWidgetProvider {
         }
 
         public static String formatCountdown(CalendarEventItem event) {
-            // Use getters is good practice if they were public
-            // Directly accessing final fields is okay for private static inner classes
             return calculateCountdown(event.startTime, event.endTime, event.allDay);
         }
 
         private static String calculateCountdown(long startTime, long endTime, boolean isAllDay) {
             try {
                 long nowMillis = System.currentTimeMillis();
-                Date startDate = new Date(startTime);
-                Date endDate = new Date(endTime);
+                Date reusableDate = TL_DATE.get();
 
                 if (nowMillis >= startTime && nowMillis < endTime) { // Happening Now
                     synchronized (TIME_FORMAT) { // Ensure thread safety
                         if (isAllDay) {
-                            Calendar startCal = Calendar.getInstance(SAST_TIMEZONE); startCal.setTimeInMillis(startTime);
-                            Calendar todayCal = Calendar.getInstance(SAST_TIMEZONE);
+                            Calendar startCal = TL_CAL_A.get(); startCal.setTimeInMillis(startTime);
+                            Calendar todayCal = TL_CAL_B.get(); todayCal.setTimeInMillis(nowMillis);
                             return (startCal.get(Calendar.DAY_OF_YEAR) == todayCal.get(Calendar.DAY_OF_YEAR) && startCal.get(Calendar.YEAR) == todayCal.get(Calendar.YEAR))
                                     ? "Today (All day)" : "Now (All day)";
                         } else {
-                            return "Now (until " + TIME_FORMAT.format(endDate) + ")";
+                            reusableDate.setTime(endTime);
+                            return "Now (until " + TIME_FORMAT.format(reusableDate) + ")";
                         }
                     }
                 }
 
                 if (nowMillis >= endTime) { // Passed
                     synchronized(DATE_FORMAT_SHORT) {
-                        return "Ended (" + DATE_FORMAT_SHORT.format(startDate) + ")";
+                        reusableDate.setTime(startTime);
+                        return "Ended (" + DATE_FORMAT_SHORT.format(reusableDate) + ")";
                     }
                 }
 
                 // Future
                 long diffMillis = startTime - nowMillis;
-                Calendar todayMid = Calendar.getInstance(SAST_TIMEZONE); todayMid.set(Calendar.HOUR_OF_DAY,0);todayMid.set(Calendar.MINUTE,0);todayMid.set(Calendar.SECOND,0);todayMid.set(Calendar.MILLISECOND,0);
-                Calendar eventMid = Calendar.getInstance(SAST_TIMEZONE); eventMid.setTimeInMillis(startTime); eventMid.set(Calendar.HOUR_OF_DAY,0);eventMid.set(Calendar.MINUTE,0);eventMid.set(Calendar.SECOND,0);eventMid.set(Calendar.MILLISECOND,0);
+                Calendar todayMid = TL_CAL_A.get(); todayMid.setTimeInMillis(nowMillis); todayMid.set(Calendar.HOUR_OF_DAY,0);todayMid.set(Calendar.MINUTE,0);todayMid.set(Calendar.SECOND,0);todayMid.set(Calendar.MILLISECOND,0);
+                Calendar eventMid = TL_CAL_B.get(); eventMid.setTimeInMillis(startTime); eventMid.set(Calendar.HOUR_OF_DAY,0);eventMid.set(Calendar.MINUTE,0);eventMid.set(Calendar.SECOND,0);eventMid.set(Calendar.MILLISECOND,0);
                 long diffDays = TimeUnit.MILLISECONDS.toDays(eventMid.getTimeInMillis() - todayMid.getTimeInMillis());
 
+                reusableDate.setTime(startTime);
                 synchronized (TIME_FORMAT) { // Synchronize remaining formats
                     if (diffDays == 0) { // Today
                         long hrs = TimeUnit.MILLISECONDS.toHours(diffMillis);
                         if(isAllDay) return "Today (All day)";
-                        if (hrs >= 1) return hrs + "h left (" + TIME_FORMAT.format(startDate) + ")";
-                        long mins = Math.max(0, TimeUnit.MILLISECONDS.toMinutes(diffMillis)); return mins + "m left (" + TIME_FORMAT.format(startDate) + ")";
+                        if (hrs >= 1) return hrs + "h left (" + TIME_FORMAT.format(reusableDate) + ")";
+                        long mins = Math.max(0, TimeUnit.MILLISECONDS.toMinutes(diffMillis)); return mins + "m left (" + TIME_FORMAT.format(reusableDate) + ")";
                     } else if (diffDays == 1) { // Tomorrow
-                        return isAllDay ? "Tomorrow (All day)" : "Tomorrow " + TIME_FORMAT.format(startDate);
+                        return isAllDay ? "Tomorrow (All day)" : "Tomorrow " + TIME_FORMAT.format(reusableDate);
                     } else { // Later
-                        return isAllDay ? diffDays+"d (" + DATE_FORMAT_SHORT.format(startDate)+", All day)" : diffDays+"d (" + DAY_TIME_FORMAT_SHORT.format(startDate) + ")";
+                        return isAllDay ? diffDays+"d (" + DATE_FORMAT_SHORT.format(reusableDate)+", All day)" : diffDays+"d (" + DAY_TIME_FORMAT_SHORT.format(reusableDate) + ")";
                     }
                 }
             } catch (Exception e) { Log.e(TAG, "Error formatting countdown", e); return ""; }

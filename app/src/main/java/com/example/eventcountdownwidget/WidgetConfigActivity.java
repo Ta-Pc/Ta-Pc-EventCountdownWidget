@@ -26,7 +26,15 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 public class WidgetConfigActivity extends Activity {
+    private static final int PERMISSION_REQUEST_CODE = 200;
+
     private static final String PREFS_NAME = "com.example.eventcountdownwidget.WidgetPrefs";
     private static final String PREF_PREFIX_KEY = "widget_";
     // private static final String FONT_SIZE_KEY = "_font_size"; // REMOVE
@@ -114,6 +122,9 @@ public class WidgetConfigActivity extends Activity {
 
         // Load saved preferences
         loadSavedPreferences();
+
+        // Check for permissions
+        checkCalendarPermission();
 
         // Set up color selection options
         setupColorOptions();
@@ -352,6 +363,26 @@ public class WidgetConfigActivity extends Activity {
             WidgetUpdateReceiver.scheduleNextUpdate(this, mAppWidgetId, EventCountdownWidget.class.getName());
             Log.d(TAG, "Update scheduling triggered after event selection for widget ID: " + mAppWidgetId);
             finishWithResult();
+        }
+    }
+    // Check and request calendar permission
+    private void checkCalendarPermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, PERMISSION_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                Snackbar.make(findViewById(android.R.id.content), "Permission granted", Snackbar.LENGTH_SHORT).show();
+            } else {
+                // Permission denied
+                Snackbar.make(findViewById(android.R.id.content), R.string.permission_required, Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 }

@@ -25,6 +25,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 
+import androidx.appcompat.widget.SearchView;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,6 +51,7 @@ public class EventSelectionActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private LinearProgressIndicator progressIndicator;
     private List<CalendarEvent> eventList = new ArrayList<>();
+    private List<CalendarEvent> fullEventList = new ArrayList<>(); // Unfiltered master list for search
     private EventAdapter eventAdapter; // Keep adapter instance
     private View emptyStateContainer;
     private TextView emptyViewTextView;
@@ -113,7 +116,43 @@ public class EventSelectionActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_event_selection, menu);
+
+        // Set up SearchView for filtering events by title
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint("Search events...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                filterEvents(newText);
+                return true;
+            }
+        });
+
         return true;
+    }
+
+    private void filterEvents(String query) {
+        if (query == null || query.trim().isEmpty()) {
+            eventList.clear();
+            eventList.addAll(fullEventList);
+        } else {
+            String lowerQuery = query.toLowerCase(Locale.getDefault());
+            List<CalendarEvent> filtered = new ArrayList<>();
+            for (CalendarEvent event : fullEventList) {
+                if (event.getTitle() != null && event.getTitle().toLowerCase(Locale.getDefault()).contains(lowerQuery)) {
+                    filtered.add(event);
+                }
+            }
+            eventList.clear();
+            eventList.addAll(filtered);
+        }
+        eventAdapter.updateList(eventList);
     }
 
     @Override
@@ -234,8 +273,8 @@ public class EventSelectionActivity extends AppCompatActivity {
         String selection = selectionBuilder.toString();
         String[] selectionArgs = selectionArgsList.toArray(new String[0]);
 
-        // Sort by date, soonest first
-        String sortOrder = CalendarContract.Instances.BEGIN + " ASC";
+        // Sort by date, soonest first. Cap results to avoid loading thousands of events into memory.
+        String sortOrder = CalendarContract.Instances.BEGIN + " ASC LIMIT 200";
 
         // Execute the query on a background thread
         new Thread(() -> {
@@ -254,6 +293,9 @@ public class EventSelectionActivity extends AppCompatActivity {
 
                 if (cursor != null && cursor.getCount() > 0) {
                     Log.d(TAG, "Calendar events found: " + cursor.getCount());
+                    // Hoist formatter and Date outside the loop — avoids N allocations
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy HH:mm", Locale.getDefault());
+                    Date reusableDate = new Date();
                     while (cursor.moveToNext()) {
                         long eventId = cursor.getLong(PROJECTION_EVENT_ID_INDEX);
                         String title = cursor.getString(PROJECTION_TITLE_INDEX);
@@ -266,9 +308,9 @@ public class EventSelectionActivity extends AppCompatActivity {
                             title = "(No Title)";
                         }
 
-                        // Format date for display
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy HH:mm", Locale.getDefault());
-                        String formattedDate = dateFormat.format(new Date(startTime));
+                        // Format date for display — reuse formatter and Date object
+                        reusableDate.setTime(startTime);
+                        String formattedDate = dateFormat.format(reusableDate);
 
                         loadedEvents.add(new CalendarEvent(eventId, title, description, startTime, eventEndTime, formattedDate)); // Add end time
                     }
@@ -294,7 +336,9 @@ public class EventSelectionActivity extends AppCompatActivity {
             // Update UI on main thread
             runOnUiThread(() -> {
                 progressIndicator.setVisibility(View.GONE);
-                eventList.clear(); // Clear the main list
+                fullEventList.clear(); // Update the master list
+                fullEventList.addAll(loadedEvents);
+                eventList.clear(); // Clear the displayed list
                 eventList.addAll(loadedEvents); // Add newly loaded events
                 eventAdapter.notifyDataSetChanged(); // Notify adapter of data change
 
